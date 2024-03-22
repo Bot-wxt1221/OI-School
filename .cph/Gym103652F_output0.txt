@@ -1,0 +1,9 @@
+Case #1: 2
+aa
+Case #2: 4
+abab
+Case #3: 2
+aa
+Case #4: 0
+Case #5: 4
+bbbb

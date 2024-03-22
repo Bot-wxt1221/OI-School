@@ -1,0 +1,14 @@
+4
+lisbon
+berlin
+1500
+9
+lisbon london 6 1000 1100
+london lisbon 6 1130 1230
+lisbon paris 5 1000 1100
+paris lisbon 4 1130 1230
+london paris 1 1130 1300
+london berlin 2 1340 1510
+berlin london 2 1300 1430
+paris berlin 10 1330 1500
+berlin paris 9 1300 1430

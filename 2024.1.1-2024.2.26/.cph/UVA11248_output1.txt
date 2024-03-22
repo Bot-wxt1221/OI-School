@@ -1,0 +1,4 @@
+Case 1: possible
+Case 2: possible
+Case 3: possible option:(1,4),(3,2)
+Case 4: possible option:(3,4)
