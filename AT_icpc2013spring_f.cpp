@@ -429,32 +429,118 @@ Poly sqrt(Poly &a){
 }
 #endif
 inline int read();
-Poly aa,bb,cc,dd;
+int aa[4055][4055];
+int bb[4055][4055];
+int r[4055];
+int c[4055];
+long long anss[10001156];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
+  long double sum=0;
+  long long cnt=0;
   int n=read();
-  aa.ci=40000;
-  int jian=0;
+  int tt=1;
+  int k=0;
+  while(tt<n){
+    k++;
+    tt*=2;
+  }
+  tt*=2;
+  k++;
+  for(int i=0;i<=tt;i++){
+    r[i]=(r[i>>1]>>1)|((i&1)<<(k-1));
+  }
   for(int i=1;i<=n;i++){
-    int tt=read()+20000;
-    aa.xi[tt]++;
-    dd.xi[tt*3]++;
+    for(int j=1;j<=n;j++){
+      bb[n-i+1][n-j+1]=aa[i][j]=read();
+      cnt+=(aa[i][j]*(aa[i][j]-1));
+      anss[0]+=(aa[i][j]*(aa[i][j]-1));
+    }
   }
-  cc=aa*aa;
-  cc=cc*aa;
-  bb.ci=80000;
-  for(int i=0;i<=40000;i++){
-    bb.xi[i*2]+=aa.xi[i];
+  for(int i=1;i<=tt;i++){
+    for(int j=1;j<=tt;j++){
+      c[j-1]=aa[i][j];
+    }
+    warn::ntt(c,tt,1,r);
+    for(int j=1;j<=tt;j++){
+      aa[i][j]=c[j-1];
+    }
   }
-  bb=bb*aa;
-  for(int i=0;i<=120000;i++){
-    int tt=cc.xi[i]-3*bb.xi[i]+2*dd.xi[i];
-    if(tt){
-      printf("%d : %d\n",i-60000,tt/6);
+  for(int i=1;i<=tt;i++){
+    for(int j=1;j<=tt;j++){
+      c[j-1]=aa[j][i];
+    }
+    warn::ntt(c,tt,1,r);
+    for(int j=1;j<=tt;j++){
+      aa[j][i]=c[j-1];
+    }
+  }
+  for(int i=1;i<=tt;i++){
+    for(int j=1;j<=tt;j++){
+      c[j-1]=bb[i][j];
+    }
+    warn::ntt(c,tt,1,r);
+    for(int j=1;j<=tt;j++){
+      bb[i][j]=c[j-1];
+    }
+  }
+  for(int i=1;i<=tt;i++){
+    for(int j=1;j<=tt;j++){
+      c[j-1]=bb[j][i];
+    }
+    warn::ntt(c,tt,1,r);
+    for(int j=1;j<=tt;j++){
+      bb[j][i]=c[j-1];
+    }
+  }
+  for(int i=1;i<=tt;i++){
+    for(int j=1;j<=tt;j++){
+      aa[i][j]=(1ll*bb[i][j]*aa[i][j])%mod;
+    }
+  }
+  int inv=pow(tt,mod-2);
+  for(int i=1;i<=tt;i++){
+    for(int j=1;j<=tt;j++){
+      c[j-1]=aa[j][i];
+    }
+    warn::ntt(c,tt,0,r);
+    for(int j=1;j<=tt;j++){
+      aa[j][i]=c[j-1]*1ll*inv%mod;
+    }
+  }
+  for(int i=1;i<=tt;i++){
+    for(int j=1;j<=tt;j++){
+      c[j-1]=aa[i][j];
+    }
+    warn::ntt(c,tt,0,r);
+    for(int j=1;j<=tt;j++){
+      aa[i][j]=c[j-1]*1ll*inv%mod;
+    }
+  }
+  for(int ti=0;ti<tt;ti++){
+    for(int tj=0;tj<tt;tj++){
+      int i=std::abs(ti-n+1);
+      int j=std::abs(tj-n+1);
+      if(i==0&&j==0){
+        continue;
+      }
+      anss[i*i+j*j]+=aa[ti+1][tj+1];
+      sum+=std::sqrt(i*i+j*j)*1ll*(aa[ti+1][tj+1]);
+      cnt+=(aa[ti+1][tj+1]);
+    }
+  }
+  printf("%.10Lf\n",(long double)sum/cnt);
+  int cntt=0;
+  for(int i=0;i<=1e7;i++){
+    if(anss[i]){
+      if((++cntt)>10000){
+        break;
+      }
+      printf("%d %lld\n",i,anss[i]/2);
     }
   }
   return 0;

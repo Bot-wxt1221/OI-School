@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <complex>
 #include <random>
+#define int long long
 #define CONFIG_POLY_DATA int
 //#define CONFIG_FFT is not set
 #define mod 998244353
@@ -32,7 +33,7 @@ inline int pow(int a,int k){
 }
 class Poly{
   public:
-    CONFIG_POLY_DATA xi[1000005];
+    CONFIG_POLY_DATA xi[500005];
     int ci;
     Poly(int n){
       ci=n;
@@ -141,7 +142,7 @@ Poly ans;
 Poly NTT(const Poly &a,const Poly &b){
   int tol=1;
   int k=0;
-  while(tol<std::min(a.ci+b.ci+2,1000002)){
+  while(tol<std::min(a.ci+b.ci+2,1000002ll)){
     tol<<=1;
     k++;
   } 
@@ -429,34 +430,47 @@ Poly sqrt(Poly &a){
 }
 #endif
 inline int read();
-Poly aa,bb,cc,dd;
+Poly aa,bb,cc;
+int ttt[1000005];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  int n=read();
-  aa.ci=40000;
-  int jian=0;
-  for(int i=1;i<=n;i++){
-    int tt=read()+20000;
-    aa.xi[tt]++;
-    dd.xi[tt*3]++;
-  }
-  cc=aa*aa;
-  cc=cc*aa;
-  bb.ci=80000;
-  for(int i=0;i<=40000;i++){
-    bb.xi[i*2]+=aa.xi[i];
-  }
-  bb=bb*aa;
-  for(int i=0;i<=120000;i++){
-    int tt=cc.xi[i]-3*bb.xi[i]+2*dd.xi[i];
-    if(tt){
-      printf("%d : %d\n",i-60000,tt/6);
+  int T=read();
+  while(T--){
+    int n=read();
+    aa.ci=1e5;
+    cc.ci=1e5;
+    int tt=0;
+    int mx=0;
+    for(int i=1;i<=n;i++){
+      tt++;
+      aa.xi[ttt[i]=read()]++;
+      cc.xi[ttt[i]]++;
+      mx=std::max(mx,ttt[i]);
     }
+    aa.ci=cc.ci=mx;
+    bb=aa*cc;
+    for(int ii=1;ii<=n;ii++){
+      int i=ttt[ii];
+      bb.xi[i*2]--;
+    }
+    for(int i=1;i<=mx;i++){
+      bb.xi[i]+=bb.xi[i-1];
+    }
+    int ans=(n)*(n-1)*(n-2)/6;
+    int tot=0;
+    for(int i=1;i<=n;i++){
+      tot-=bb.xi[ttt[i]]/2;
+      tot+=(i-1)*(i-2)/2;
+      aa.xi[ttt[i]]=0;
+      cc.xi[ttt[i]]=0;
+    }
+    printf("%.7Lf\n",((long double)tot/ans));
   }
+
   return 0;
 }
 inline int read(){
