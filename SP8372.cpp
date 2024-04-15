@@ -1,34 +1,14 @@
 #include <iostream>
 #include <cstdio>
-#include <bitset>
 inline int read();
-std::bitset<250008>a;
+
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-   int n;
-  while(((n=read())>=0)){
-    a=1;
-    int ans=0;
-    for(int i=1;i<=n;i++){
-      int v=read();
-      int m=read();
-      ans+=v*m;
-      for(int j=0;j<=m;j++){
-        a|=(a<<v);
-      }
-    }
-    for(int i=(ans+1)/2;i<=ans;i++){
-      if(a[i]==0){
-        continue;
-      }
-      printf("%d %d\n",i,ans-i);
-      break;
-    }
-  }
+  
   return 0;
 }
 inline int read(){

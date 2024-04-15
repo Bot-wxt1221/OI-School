@@ -1,21 +1,9 @@
 #include <iostream>
 #include <cstdio>
 #include <map>
+#include <bitset>
 inline int read();
-class Poly{
-  public:
-    std::map<int,int>vec;
-};
-Poly operator * (Poly a,Poly b){
-  Poly ans;
-  for(auto i=a.vec.begin();i!=a.vec.end();i++){
-    for(auto j=b.vec.begin();j!=b.vec.end();j++){
-      ans.vec[i->first+j->first]+=(i->second*j->second);
-    }
-  }
-  return ans;
-}
-
+std::bitset<100005>a,b;
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
@@ -24,28 +12,26 @@ signed main(){
   #endif
   int n;
   while(scanf("%d",&n)!=EOF){
-    Poly a,b;
-    a.vec[0]=1;
+    a=0;
+    a[50000]=1;
     int s=0;
     for(int i=1;i<=n;i++){
-      b.vec.clear();
-      int tt=read();
+      int tt;
+      scanf("%d",&tt);
       s+=tt;
-      b.vec[tt]=1;
-      b.vec[-tt]=1;
-      b.vec[0]=1;
-      a=a*b;
+    //  b.vec[tt]=1;
+      a|=((a<<tt)|(a>>tt));
     }
     int cnt=0;
     for(int i=1;i<=s;i++){
-      if(a.vec[i]==0){
+      if(a[i+50000]==0){
         cnt++;
       }
     }
     printf("%d\n",cnt);
     if(cnt>0){
       for(int i=1;i<=s;i++){
-        if(a.vec[i]==0){
+        if(a[i+50000]==0){
           printf("%d ",i);
         }
       }

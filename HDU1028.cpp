@@ -10,7 +10,7 @@ signed main(){
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  long long n;
+  register long long n;
   dp[0]=1;
   for(int i=1;i<=125;i++){
     for(int j=i;j<=125;j++){
@@ -18,7 +18,7 @@ signed main(){
     }
   }
   while(scanf("%lld",&n)!=EOF){
-    printf("%lld\n",dp[n]);
+    printf("%lld\n",(long long )dp[n]);
   }
   return 0;
 }
