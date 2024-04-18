@@ -39,6 +39,7 @@ signed main(){
       l=mid;
     }
   }
+  int n=read();
   printf("%.15Lf",l);
   return 0;
 }
