@@ -1,3 +1,5 @@
+#include <iostream>
+#include <cstdio>
 #include <cstring>
 #include <cmath>
 #include <algorithm>
@@ -31,7 +33,7 @@ inline int pow(int a,int k){
 namespace Poly{
 class Poly{
   public:
-    CONFIG_POLY_DATA xi[1000005];
+    CONFIG_POLY_DATA xi[400005];
     int ci;
     Poly(int n){
       ci=n;
@@ -517,3 +519,96 @@ Poly chu(Poly &F,Poly G,Poly &Lf){
 }
 #endif
 }
+inline int read();
+long long tttt;
+inline int read(int md);
+Poly::Poly a;
+long long ttttt;
+signed main(){
+  #ifdef ONLINE_JUDGE
+  #else
+  freopen("/home/wxt/Downloads/P5273_5.in","r",stdin);
+  freopen(".out","w",stdout);
+  #endif
+  a.ci=read()-1;
+  int n=a.ci;
+  a.ci=-1;
+  int k=read(998244353);
+  int fir=-1;
+  int cnt=0;
+  for(int i=0;i<=n;i++){
+    int tt=read();
+    if(tt&&fir==-1){
+      a.xi[++a.ci]=tt;
+      fir=1;
+    }else if(fir!=-1){
+      a.xi[++a.ci]=tt;
+    }else{
+      cnt++;
+    }
+  }
+  int tt=pow(a.xi[0],mod-2);
+  int tt2=pow(a.xi[0],tttt);
+  for(int i=0;i<=a.ci;i++){
+    a.xi[i]=(1ll*tt*a.xi[i])%mod;
+  }
+  a=ln(a);
+  for(int i=0;i<=a.ci;i++){
+    a.xi[i]=(1ll*a.xi[i]*k)%mod;
+  }
+  a=exp(a);
+  for(int i=0;i<std::min(std::min(1ll*cnt*ttttt,20000000ll),1ll*n+1);i++){
+    printf("0 ");
+  }
+  for(long long i=1ll*cnt*ttttt;i<=n;i++){
+    printf("%lld ",(1ll*a.xi[i-cnt*k]*tt2)%mod);
+  }
+  return 0;
+}
+inline int read(){
+  int x=0,f=1;char c=getchar();
+  while(c<'0'||c>'9'){
+    c=='-'?f=-1:1;
+    c=getchar();
+  }
+  while(c>='0'&&c<='9'){
+    x=(x<<3)+(x<<1)+(c^48);
+    c=getchar();
+  }
+  return f*x;
+}
+inline int read(int md){
+  long long x=0,f=1;char c=getchar();
+  while(c<'0'||c>'9'){
+    c=='-'?f=-1:1;
+    c=getchar();
+  }
+  while(c>='0'&&c<='9'){
+    x=(x<<3)+(x<<1)+(c^48);
+    tttt=(tttt<<3)+(tttt<<1)+(c^48);
+    ttttt=ttttt*10+(c^48);
+    if(ttttt>mod){
+      ttttt=mod+1;
+    }
+    tttt%=(md-1);
+    x%=md;
+    c=getchar();
+  }
+  return f*x;
+}
+
+/*
+Anything about this program:
+Type:
+
+Description:
+
+Example:
+	1:
+		In:
+
+		Out:
+More:
+
+*/
+

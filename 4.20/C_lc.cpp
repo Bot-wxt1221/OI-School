@@ -9,14 +9,14 @@ unordered_map<int, int> mp;
 void dfs(int x, int now) {
     if (!x || now == 1 || !now) return ;
     // cout << x << ' ' << now << ' ' << f[x][mp[now]] << '\n';
-    if (!ys[g[x][mp[now]]]) return;
+    if (x==-1||!ys[g[x][mp[now]]]) return;
     dfs(lst[x][mp[now]], now / ys[g[x][mp[now]]]);
     tmp[++len] = g[x][mp[now]];
 }
 
 int main() {
-//    freopen("C.in", "r", stdin);
-//    freopen("C.out", "w", stdout);
+ //   freopen("C.in", "r", stdin);
+ //   freopen("C.out", "w", stdout);
     scanf("%d", &t);
     for (int i = 0; i <= 3000; ++i)
         for (int j = 0; j <= 3000; ++j)
@@ -52,14 +52,12 @@ int main() {
         }
         
         int cc, dn = 1e9, pp = -1, aa = 0, ccc;
-        for (int i = 2; i <= tot; ++i) {
+        for (int i = 1; i <= tot; ++i) {
             int p = -1, s = 1;
             cc = 0;
             for (int a = 0; a <= n; ++a) {
-                if(1ll*s*(ys[i]-a)>c){
-                  break ;
-                  }
-                s *= (1ll*ys[i] - a);
+                if (1ll * s * (ys[i] - a) > c) break;
+                s *= (ys[i] - a);
                 if (s == 0) break;
                 if (c % s) continue;
                 if (f[i][mp[c / s]] + a + 1 > n) {

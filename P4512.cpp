@@ -1,3 +1,5 @@
+#include <iostream>
+#include <cstdio>
 #include <cstring>
 #include <cmath>
 #include <algorithm>
@@ -107,16 +109,6 @@ Poly operator - (Poly a,const Poly &b){
   }
   return a;
 }
-Poly operator - (Poly a,const Poly &b){
-  for(int i=a.ci+1;i<=b.ci;i++){
-    a.xi[i]=0;
-  }
-  a.ci=std::max(a.ci,b.ci);
-  for(int i=0;i<=a.ci;i++){
-    a.xi[i]+=b.xi[i];
-  }
-  return a;
-}
 Poly FFT(const Poly &a,const Poly &b){
   PI=acos(-1);
   int tol=1;
@@ -169,17 +161,7 @@ Poly operator - (Poly a,const Poly &b){
   }
   return a;
 }
-Poly operator + (Poly a,const Poly &b){
-  for(int i=a.ci+1;i<=b.ci;i++){
-    a.xi[i]=0;
-  }
-  a.ci=std::max(a.ci,b.ci);
-  for(int i=0;i<=a.ci;i++){
-    a.xi[i]+=b.xi[i];
-    a.xi[i]%=mod;
-  }
-  return a;
-}
+
 Poly ans;
 Poly NTT(const Poly &a,const Poly &b){
   int tol=1;
@@ -397,10 +379,6 @@ Poly ln(Poly a){
   Poly b=inv(a);
   Dao(a);
   b=b*a;
-  for(int i=a.ci+2;i<=b.ci;i++){
-    b.xi[i]=0;
-  }
-  b.ci=std::min(b.ci,a.ci+1);
   Ji(b);
   return b;
 }
@@ -517,3 +495,58 @@ Poly chu(Poly &F,Poly G,Poly &Lf){
 }
 #endif
 }
+inline int read();
+Poly::Poly a,b,c,d;
+signed main(){
+  #ifdef ONLINE_JUDGE
+  #else
+  freopen(".in","r",stdin);
+  freopen(".out","w",stdout);
+  #endif
+  int n=read();
+  int m=read();
+  a.ci=n;
+  b.ci=m;
+  for(int i=0;i<=n;i++){
+    a.xi[i]=read();
+  }
+  for(int i=0;i<=m;i++){
+    b.xi[i]=read();
+  }
+  d=Poly::chu(a,b,c);
+  for(int i=0;i<=n-m;i++){
+    printf("%d ",d.xi[i]);
+  }
+  printf("\n");
+  for(int i=0;i<m;i++){
+    printf("%d ",c.xi[i]);
+  }
+  return 0;
+}
+inline int read(){
+  int x=0,f=1;char c=getchar();
+  while(c<'0'||c>'9'){
+    c=='-'?f=-1:1;
+    c=getchar();
+  }
+  while(c>='0'&&c<='9'){
+    x=(x<<3)+(x<<1)+(c^48);
+    c=getchar();
+  }
+  return f*x;
+}
+/*
+Anything about this program:
+Type:
+
+Description:
+
+Example:
+	1:
+		In:
+
+		Out:
+More:
+
+*/
+

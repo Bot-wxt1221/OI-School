@@ -2,15 +2,19 @@
 #include <cmath>
 #include <algorithm>
 #include <complex>
-#include <random>
+#include <iostream>
+#include <cstdio>
+#define int __int128
+inline int read();
+
 #define CONFIG_POLY_DATA int
 //#define CONFIG_FFT is not set
-#define mod 998244353
+#define mod 4179340454199820289
 #define g 3
-#define invg 332748118
+#define invg (4179340454199820289+1)/3
 #define CONFIG_NTT y
 inline int pow(int a,int k){
-  long long res=1;
+  __int128 res=1;
   while(k){
     if(k&1){
       #ifdef mod
@@ -20,7 +24,7 @@ inline int pow(int a,int k){
       #endif
     }
     #ifdef mod
-    a=1ll*a*a%mod;
+    a=(__int128)a*a%mod;
     #else
     a*=a;
     #endif
@@ -28,10 +32,9 @@ inline int pow(int a,int k){
   }
   return res;
 }
-namespace Poly{
 class Poly{
   public:
-    CONFIG_POLY_DATA xi[1000005];
+    CONFIG_POLY_DATA xi[400005];
     int ci;
     Poly(int n){
       ci=n;
@@ -97,31 +100,11 @@ namespace warn{
   #endif
 }
 #ifdef CONFIG_FFT
-Poly operator - (Poly a,const Poly &b){
-  for(int i=a.ci+1;i<=b.ci;i++){
-    a.xi[i]=0;
-  }
-  a.ci=std::max(a.ci,b.ci);
-  for(int i=0;i<=a.ci;i++){
-    a.xi[i]-=b.xi[i];
-  }
-  return a;
-}
-Poly operator - (Poly a,const Poly &b){
-  for(int i=a.ci+1;i<=b.ci;i++){
-    a.xi[i]=0;
-  }
-  a.ci=std::max(a.ci,b.ci);
-  for(int i=0;i<=a.ci;i++){
-    a.xi[i]+=b.xi[i];
-  }
-  return a;
-}
 Poly FFT(const Poly &a,const Poly &b){
   PI=acos(-1);
   int tol=1;
   int k=0;
-  while(tol<std::min(a.ci+b.ci+2,1000002)){
+  while(tol<(a.ci+b.ci+2)){
     tol<<=1;
     k++;
   }
@@ -156,35 +139,11 @@ Poly FFT(const Poly &a,const Poly &b){
 }
 #endif
 #ifdef CONFIG_NTT
-Poly operator - (Poly a,const Poly &b){
-  for(int i=a.ci+1;i<=b.ci;i++){
-    a.xi[i]=0;
-  }
-  a.ci=std::max(a.ci,b.ci);
-  for(int i=0;i<=a.ci;i++){
-    a.xi[i]-=b.xi[i];
-    a.xi[i]%=mod;
-    a.xi[i]+=mod;
-    a.xi[i]%=mod;
-  }
-  return a;
-}
-Poly operator + (Poly a,const Poly &b){
-  for(int i=a.ci+1;i<=b.ci;i++){
-    a.xi[i]=0;
-  }
-  a.ci=std::max(a.ci,b.ci);
-  for(int i=0;i<=a.ci;i++){
-    a.xi[i]+=b.xi[i];
-    a.xi[i]%=mod;
-  }
-  return a;
-}
 Poly ans;
 Poly NTT(const Poly &a,const Poly &b){
   int tol=1;
   int k=0;
-  while(tol<std::min(a.ci+b.ci+2,1000002)){
+  while(tol<std::min(a.ci+b.ci+2,(int)400002)){
     tol<<=1;
     k++;
   } 
@@ -233,89 +192,6 @@ const Poly operator * (const Poly &a,const Poly &b){
   #endif
 }
 #ifdef CONFIG_NTT
-namespace modd{
-  std::mt19937 ran;
-  class complex{
-  public:
-    long long real,imag;
-    complex(int a=0,int b=0){
-      real=a;
-      imag=b;
-      return ;
-    }
-  };
-  inline int pow(int a,int k){
-    long long res=1;
-    while(k){
-      if(k&1){
-        #ifdef mod
-        res=1ll*res*a%mod;
-        #else
-        res*=a;
-        #endif
-      }
-      #ifdef mod
-      a=1ll*a*a%mod;
-      #else
-      a*=a;
-      #endif
-      k>>=1;
-    }
-    return res;
-  }
-  int i2;
-  const complex operator * (const complex &a,const complex &b){
-    complex ans(0,0);
-    ans.real=a.real*b.real;
-    ans.real%=mod;
-    ans.real+=((a.imag*b.imag)%mod*i2)%mod;
-    ans.real%=mod;
-    ans.real+=mod;
-    ans.real%=mod;
-    ans.imag+=(a.imag*b.real)%mod;
-    ans.imag%=mod;
-    ans.imag+=(b.imag*a.real)%mod;
-    ans.imag%=mod;
-    return ans;
-  }
-  complex pow(complex a,int b){
-    complex ans(1,0);
-    complex cur=a;
-    while(b){
-      if(b%2==1){
-        ans=ans*cur;
-        ans.real=ans.real%mod;
-        ans.imag=ans.imag%mod;
-      }
-      cur=cur*cur;
-      cur.real=cur.real%mod;
-      cur.imag=cur.imag%mod;
-      b/=2;
-    }
-    return ans;
-  }
-  int sqrtt(long long n){
-    if(n==0){
-      return 0;
-    }
-    if(pow(n,(mod-1)/2)==mod-1){
-      return -1;
-    }
-    long long a;
-    while(1){
-      a=ran()%mod;
-      long long b=(((a*a)%mod-n)%mod+mod)%mod;
-      i2=b;
-      if(pow(b,(mod-1)/2)==mod-1){
-        break;
-      }
-    }
-    complex base(a,1);
-    long long ans1=pow(base,(mod+1)/2).real;
-    long long ans2=mod-ans1;
-    return std::min(ans1,ans2);
-  }
-};
 static void inv_work(Poly &b,Poly &a,int len){
   if(len==1){
     b.xi[0]=pow(a.xi[0],mod-2);
@@ -360,6 +236,7 @@ static void inv_work(Poly &b,Poly &a,int len){
   ans.ci=len-1;
   for(int i=0;i<len;i++){
     ans.xi[i]=1ll*aa[i]*inv%mod;
+    ans.xi[i]%=313;
   }
   delete [] aa;
   delete [] bb;
@@ -397,14 +274,10 @@ Poly ln(Poly a){
   Poly b=inv(a);
   Dao(a);
   b=b*a;
-  for(int i=a.ci+2;i<=b.ci;i++){
-    b.xi[i]=0;
-  }
-  b.ci=std::min(b.ci,a.ci+1);
   Ji(b);
   return b;
 }
-Poly a,temp,temp2;
+Poly a,temp;
 void exp_work(Poly &ans,Poly &b,int len){
   if(len==1){
     ans.ci=0;
@@ -439,81 +312,51 @@ Poly exp(Poly &a){
   exp_work(ans,a,a.ci+1);
   return ans;
 }
-void sqrt_work(Poly &ans,Poly &a,int len){
-  if(len==1){
-    ans.ci=0;
-    ans.xi[0]=modd::sqrtt(a.xi[0]);
-    return ;
-  }
-  sqrt_work(ans,a,(len+1)/2);
-  temp2=ans*ans;
-  for(int i=0;i<=ans.ci;i++){
-    ans.xi[i]*=2;
-    ans.xi[i]%=mod;
-  }
-  for(int i=ans.ci+1;i<=len;i++){
-    ans.xi[i]=0;
-  }
-  ans.ci=len-1;
-  temp=inv(ans);
-  for(int i=0;i<=temp.ci;i++){
-    temp.xi[i]=(1ll*temp.xi[i])%mod;
-    temp2.xi[i]+=a.xi[i];
-    temp2.xi[i]%=mod; 
-  }
-  temp2.ci=len-1;
-  ans=temp*temp2;
-  for(int i=len;i<=ans.ci;i++){
-    ans.xi[i]=0;
-  }
-  ans.ci=len-1;
-  return ;
-}
-Poly sqrt(Poly &a){
-  Poly ans(a.ci);
-  sqrt_work(ans,a,a.ci+1);
-  return ans;
-}
-Poly chu(Poly &F,Poly G,Poly &Lf){
-  for(int i=0;i<=F.ci;i++){
-    if(F.ci-i>i){
-      std::swap(F.xi[i],F.xi[F.ci-i]);
-    }
-  }
-  a=G;
-  for(int i=0;i<=G.ci;i++){
-    if(G.ci-i>i){
-      std::swap(G.xi[i],G.xi[G.ci-i]);
-    }
-  }
-  int bk=G.ci;
-  for(int i=F.ci-G.ci+1;i<=G.ci;i++){
-    G.xi[i]=0;
-  }
-  G.ci=F.ci-G.ci;
-  G=inv(G);
-  temp=F*G;
-  for(int i=F.ci-bk+1;i<=a.ci;i++){
-    temp.xi[i]=0;
-  }
-  temp.ci=std::min(temp.ci,F.ci-bk);
-  for(int i=0;i<=temp.ci;i++){
-    if(temp.ci-i>i){
-      std::swap(temp.xi[i],temp.xi[temp.ci-i]);
-    }
-  }
-  for(int i=0;i<=F.ci;i++){
-    if(F.ci-i>i){
-      std::swap(F.xi[i],F.xi[F.ci-i]);
-    }
-  }
-  for(int i=0;i<=G.ci;i++){
-    if(G.ci-i>i){
-      std::swap(G.xi[i],G.xi[G.ci-i]);
-    }
-  }
-  Lf=F-a*temp;
-  return temp;
-}
 #endif
+Poly A;
+signed main(){
+  #ifdef ONLINE_JUDGE
+  #else
+  freopen(".in","r",stdin);
+  freopen(".out","w",stdout);
+  #endif
+  int n;
+  while((n=read())!=0){
+    n++;
+    A.ci=n-1;
+    A.xi[0]=1;
+    for(int i=1;i<n;i++){
+      A.xi[i]=mod-read();
+      A.xi[i]%=mod;
+    }
+    A=inv(A);
+    printf("%lld\n",(long long)(A.xi[n-1]%313));
+  }
+  return 0;
 }
+inline int read(){
+  int x=0,f=1;char c=getchar();
+  while(c<'0'||c>'9'){
+    c=='-'?f=-1:1;
+    c=getchar();
+  }
+  while(c>='0'&&c<='9'){
+    x=(x<<3)+(x<<1)+(c^48);
+    c=getchar();
+  }
+  return f*x;
+}
+/*
+Anything about this program:
+Type:
+
+Description:
+
+Example:
+	1:
+		In:
+
+		Out:
+More:
+
+*/

@@ -1,3 +1,5 @@
+#include <iostream>
+#include <cstdio>
 #include <cstring>
 #include <cmath>
 #include <algorithm>
@@ -31,7 +33,7 @@ inline int pow(int a,int k){
 namespace Poly{
 class Poly{
   public:
-    CONFIG_POLY_DATA xi[1000005];
+    CONFIG_POLY_DATA xi[400005];
     int ci;
     Poly(int n){
       ci=n;
@@ -184,7 +186,7 @@ Poly ans;
 Poly NTT(const Poly &a,const Poly &b){
   int tol=1;
   int k=0;
-  while(tol<std::min(a.ci+b.ci+2,1000002)){
+  while(tol<std::min(a.ci+b.ci+2,200002)){
     tol<<=1;
     k++;
   } 
@@ -397,10 +399,6 @@ Poly ln(Poly a){
   Poly b=inv(a);
   Dao(a);
   b=b*a;
-  for(int i=a.ci+2;i<=b.ci;i++){
-    b.xi[i]=0;
-  }
-  b.ci=std::min(b.ci,a.ci+1);
   Ji(b);
   return b;
 }
@@ -517,3 +515,61 @@ Poly chu(Poly &F,Poly G,Poly &Lf){
 }
 #endif
 }
+inline int read();
+Poly::Poly a,b;
+int t[100005];
+int inv[100005];
+signed main(){
+  #ifdef ONLINE_JUDGE
+  #else
+  freopen(".in","r",stdin);
+  freopen(".out","w",stdout);
+  #endif
+  int n=read();
+  int m=read();
+  a.ci=b.ci=m;
+  for(int i=1;i<=n;i++){
+    t[read()]++;
+  }
+  for(int i=1;i<=m;i++){
+    inv[i]=pow(i,mod-2);
+  }
+  for(int i=1;i<=m;i++){
+    for(int j=1;j*i<=m;j++){
+      a.xi[i*j]+=1ll*inv[j]*t[i]%mod;
+      a.xi[i*j]%=mod;
+    }
+  }
+  b=exp(a);
+  for(int i=1;i<=m;i++){
+    printf("%d\n",b.xi[i]);
+  }
+  return 0;
+}
+inline int read(){
+  int x=0,f=1;char c=getchar();
+  while(c<'0'||c>'9'){
+    c=='-'?f=-1:1;
+    c=getchar();
+  }
+  while(c>='0'&&c<='9'){
+    x=(x<<3)+(x<<1)+(c^48);
+    c=getchar();
+  }
+  return f*x;
+}
+/*
+Anything about this program:
+Type:
+
+Description:
+
+Example:
+	1:
+		In:
+
+		Out:
+More:
+
+*/
+
