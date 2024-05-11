@@ -1,99 +1,108 @@
-#include<bits/stdc++.h>
-using namespace std;
-#define RA auto
-
-namespace FastIO
-{
-	const int Mt = 1e5;
-	inline char getch()
-	{
-		static char buf[Mt],*p1 = buf,*p2 = buf;
-		return p1 == p2 && (p2 = (p1 = buf) + fread(buf,1,Mt,stdin),p1 == p2) ? EOF : *p1++;
+#include <iostream>
+#include <cstdio>
+#include <queue> 
+#include <cstring>
+namespace pro{
+	int read();
+	void add(int x,int y,int z);
+	class node{
+		public:
+			int i,kk;
+			int dis;
+			node(int x,int y,int z){
+				i=x;
+				kk=y;
+				dis=z;
+				return ;
+			}
+	};
+	bool operator < (node a,node b){
+		return a.dis>b.dis;
 	}
-	
-	inline int input()
-	{
-		register int num = 0,f = 1;
-		char ch = getch();
-		while(ch < '0' || ch > '9')
-		{
-			if(ch == '-') f = -1;
-			ch = getch();
+	std::priority_queue<node>qu;
+	int dp[10005][105];
+	int sure[10005][105];
+	int fir[80005];
+	int nxt[80005];
+	int v[80005];
+	int w[80005];
+	int now;
+	int solve(){
+		int n=read(),m,k;
+		m=read();
+		k=read();
+		for(int i=1;i<=n;i++){
+			fir[i]=-1;
 		}
-		while(ch >= '0' && ch <= '9')
-		{
-			num = (num << 1) + (num << 3) + (ch ^ 48);
-			ch = getch();
+		for(int i=1;i<=m;i++){
+			int u=read();
+			int v=read();
+			int m=read();
+			add(u,v,m); 
 		}
-		return num * f;
+		memset(dp,0x7f,sizeof(dp));
+		dp[1][0]=0;
+		qu.push(node(1,0,0));
+		while(qu.size()>0){
+			node temp=qu.top();
+			qu.pop();
+			while(qu.size()>0&&sure[temp.i][temp.kk]){
+				temp=qu.top();
+				qu.pop();
+			}
+      if(sure[temp.i][temp.kk]){
+        break;
+      }
+			sure[temp.i][temp.kk]=1; 
+			for(int i=fir[temp.i];i!=-1;i=nxt[i]){
+				int disto=dp[temp.i][temp.kk]+1;
+				int distok=disto%k;
+				if(dp[temp.i][temp.kk]<w[i]){
+					int addk=(w[i]-dp[temp.i][temp.kk])/k;
+					if((w[i]-dp[temp.i][temp.kk])%k!=0){
+						addk++;
+					}
+					disto+=addk*k;
+				}
+				if(disto<dp[v[i]][distok]){
+					dp[v[i]][distok]=disto;
+					qu.push(node(v[i],distok,dp[v[i]][distok]));
+				}
+			}
+		}
+		if(dp[n][0]>=0x7f7f7f7f){
+			printf("-1");
+		}else{
+			printf("%d",dp[n][0]);
+		}
+		return 0;
 	}
-	
-	inline void printNum(int num)
-	{
-		if(num >= 10) printNum(num / 10);
-		putchar(num % 10 + 48);
+};
+
+int main(){
+// 	freopen("bus.in","r",stdin);
+// 	freopen("bus.out","w",stdout);
+	return pro::solve();
+}
+void pro::add(int x,int y,int z){
+	w[++now]=z;
+	v[now]=y;
+	nxt[now]=fir[x];
+	fir[x]=now;
+	return ;
+}
+int pro::read(){
+	int f=1,x=0;
+	char temp=getchar();
+	while(temp>'9'||temp<'0'){
+		if(temp=='-'){
+			f=-1;
+		}
+		temp=getchar();
 	}
-	
-	inline void print(int num,char ch = ' ')
-	{
-		if(num < 0) putchar('-'),num = -num;
-		printNum(num);
-		putchar(ch);
+	while('0'<=temp&&temp<='9'){
+		x=(x<<3)+(x<<1)+(temp^'0');
+		temp=getchar();
 	}
-}
-using FastIO::input;
-using FastIO::print;
-
-const int N = 5e4 + 5;
-int a,b,c,d,k;
-int miu[N+5],pre[N+5];
-bool vis[N+5];
-vector <int> p;
-
-//use to get µ[n]
-void init()
-{
-    miu[1] = 1;
-    for(int i = 2;i < N;i++)
-    {
-        cout << i << " " << p.size() << endl;
-        if(!vis[i]) { miu[i] = -1;p.push_back(i); }
-        for(int tmp : p)
-        {
-            if(tmp * i >= N) break;
-            vis[tmp * i] = 1;
-            if(i % tmp == 0) break;
-            miu[i * tmp] = -miu[i];
-        }
-    }
-    for(int i = 1;i < N;i++)
-        pre[i] = pre[i - 1] + miu[i];
-}
-
-//use to solve [x,y] problem
-long long solve(int x,int y)
-{
-    RA ub = min(x,y);
-    RA ans = 0LL;
-    RA l = 1,r = 0;
-
-    while(l <= ub)
-    {
-        cout << 1 << endl;
-        r = min(a / (a / l),b / (b / l));
-        ans += (1L * a / (1L * l * k) * (1L * b / (1L * l * k)) * (pre[r] - pre[l - 1]));
-    }
-
-    return ans;
-}
-
-//main function
-int main()
-{
-    init();
-    // for(int n = input();n;n--)
-    // {
-    //     a = input(),b = input(),c = input(),d = input(),k = input();
-    //     print(solve(b,d) - solve(a,d) - solve(b,c) + solve(a,c),'\n');
-    // }
+	return f*x;
 }

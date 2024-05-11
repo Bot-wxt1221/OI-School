@@ -1,0 +1,40 @@
+2024-05-10 00:06:55 - Neovide panicked with the message 'If dragging, there should be a window details recorded'. (File: src/window/mouse_manager.rs; Line: 129, Column: 26)
+   0: neovide::main::{{closure}}
+   1: std::panicking::rust_panic_with_hook
+   2: std::panicking::begin_panic_handler::{{closure}}
+   3: std::sys_common::backtrace::__rust_end_short_backtrace
+   4: rust_begin_unwind
+   5: core::panicking::panic_fmt
+   6: core::option::expect_failed
+   7: neovide::window::mouse_manager::MouseManager::handle_pointer_motion
+   8: neovide::window::window_wrapper::WinitWindowWrapper::handle_event
+   9: neovide::window::update_loop::UpdateLoop::step
+  10: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &mut F>::call_mut
+  11: winit::platform_impl::platform::wayland::event_loop::EventLoop<T>::pump_events
+  12: neovide::window::main_loop
+  13: neovide::main
+  14: std::sys_common::backtrace::__rust_begin_short_backtrace
+  15: main
+  16: __libc_start_call_main
+  17: __libc_start_main@@GLIBC_2.34
+  18: _start
+
+2024-05-10 09:36:31 - Neovide panicked with the message 'called `Result::unwrap()` on an `Err` value: Connection(IoError(Custom { kind: Other, error: UnknownError }))'. (File: /build/neovide-0.12.2-vendor.tar.gz/winit/src/platform_impl/linux/x11/window.rs; Line: 1316, Column: 14)
+   0: neovide::main::{{closure}}
+   1: std::panicking::rust_panic_with_hook
+   2: std::panicking::begin_panic_handler::{{closure}}
+   3: std::sys_common::backtrace::__rust_end_short_backtrace
+   4: rust_begin_unwind
+   5: core::panicking::panic_fmt
+   6: core::result::unwrap_failed
+   7: winit::window::Window::inner_size
+   8: neovide::window::update_loop::UpdateLoop::step
+   9: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &mut F>::call_mut
+  10: neovide::window::main_loop
+  11: neovide::main
+  12: std::sys_common::backtrace::__rust_begin_short_backtrace
+  13: main
+  14: __libc_start_call_main
+  15: __libc_start_main@@GLIBC_2.34
+  16: _start
+
