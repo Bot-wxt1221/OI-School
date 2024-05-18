@@ -1,76 +1,32 @@
+#include <vector>
 #include <iostream>
 #include <cstdio>
-#include <vector>
 inline int read();
-int temp[2000005];
-int rk[2][2000005];
-int sa[2000005];
-int height[2000005];
-int beg[2000005];
-int nn;
-bool used[2000005];
-std::vector<int>vec[2000005],vec2[2000005];
-int num;
-bool check(int md){
-  int pre=1,cnt=0;
-  for(int i=1;i<=num;i++){
-    if(height[i]<md){
-      if(cnt==nn){
-        for(int j=1;j<=nn;j++){
-          used[beg[sa[j]]]=0;
-        }
-        return 1;
-      }
-      cnt=0;
-      for(int j=pre;j<i;j++){
-        used[beg[sa[j]]]=0;
-      }
-      pre=i;
-    }
-    if(used[beg[sa[i]]]==0&&beg[sa[i]]!=0){
-      used[beg[sa[i]]]=1;
-      cnt++;
-    }
-  }
-  for(int j=1;j<=nn;j++){
-    used[beg[sa[j]]]=0;
-  }
-  if(cnt==nn){
-    return 1;
-  }
-  return 0;
-}
+char temp1[800005];
+char temp2[800005];
+char temp[800005];
+int beg[800005];
+int rk[2][8000005];
+int sa[8000005];
+int height[8000005];
+std::vector<int>vec[8000005],vec2[8000005];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  nn=read();
-  int cnt=0;
-  int mmm=0x3f3f3f3f,mn=0;
-  for(int i=1;i<=nn;i++){
-    int m=read();
-    mmm=std::min(mmm,m);
-    int pre=cnt+1;
-    int sum=0;
-    for(int j=1;j<=m;j++){
-      int tt=read();
-      mn=std::max(mn,tt);
-      temp[++cnt]=tt;
-      if(j!=1){
-        temp[cnt]-=sum;
-      }
-      sum+=temp[cnt];
-      beg[cnt]=i;
-    }
-    temp[++cnt]=1e5+i;
-    beg[cnt]=0;
+  scanf("%s",temp1+1);
+  scanf("%s",temp2+1);
+  int n=0;
+  for(int i=1;temp1[i]!='\0';i++){
+    temp[++n]=temp1[i];
+    beg[i]=1;
   }
-  for(int i=1;i<=cnt;i++){
-    temp[i]+=mn;
+  temp[++n]='#';
+  for(int i=1;temp2[i]!='\0';i++){
+    temp[++n]=temp2[i];
   }
-  int n=cnt;
   int tn=n;
   int tt=1;
   while(tt<=n){
@@ -128,22 +84,22 @@ signed main(){
     }
     height[rk[op][i]]=k;
   }
-  num=tn;
-  int l=0,r=1e9;
-  while(r-l>3){
-    int mid=(l+r)/2;
-    if(check(mid)){
-      l=mid-1;
-    }else{
-      r=mid+1;
+  int cnt1=0,cnt2=0;
+  long long tans=0;
+  for(int i=1;i<=tn;i++){
+    if(height[i]==0){
+      tans+=(cnt1*1ll*cnt2);
+      cnt1=0;
+      cnt2=0;
+    }
+    if(beg[sa[i-1]]){
+      cnt1++;
+    }else if(temp[sa[i-1]]!='#'){
+      cnt2++;
     }
   }
-  for(int i=r;i>=l;i--){
-    if(check(i)){
-      printf("%d",i+1);
-      return 0;
-    }
-  }
+  tans+=(1ll*cnt1*cnt2);
+  printf("%lld",tans);
   return 0;
 }
 inline int read(){
