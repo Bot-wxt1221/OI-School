@@ -1,4 +1,4 @@
-2024-05-17 13:20:34 - Neovide panicked with the message 'called `Result::unwrap()` on an `Err` value: Connection(IoError(Custom { kind: Other, error: UnknownError }))'. (File: /build/neovide-0.12.2-vendor.tar.gz/winit/src/platform_impl/linux/x11/window.rs; Line: 1316, Column: 14)
+2024-05-20 06:56:50 - Neovide panicked with the message 'called `Result::unwrap()` on an `Err` value: Connection(IoError(Custom { kind: Other, error: UnknownError }))'. (File: /build/neovide-0.13.0-vendor.tar.gz/winit/src/platform_impl/linux/x11/window.rs; Line: 1316, Column: 14)
    0: neovide::main::{{closure}}
    1: std::panicking::rust_panic_with_hook
    2: std::panicking::begin_panic_handler::{{closure}}
@@ -6,14 +6,15 @@
    4: rust_begin_unwind
    5: core::panicking::panic_fmt
    6: core::result::unwrap_failed
-   7: winit::window::Window::inner_size
-   8: neovide::window::update_loop::UpdateLoop::step
-   9: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &mut F>::call_mut
-  10: neovide::window::main_loop
-  11: neovide::main
-  12: std::sys_common::backtrace::__rust_begin_short_backtrace
-  13: main
-  14: __libc_start_call_main
-  15: __libc_start_main@@GLIBC_2.34
-  16: _start
+   7: winit::platform_impl::platform::x11::window::UnownedWindow::inner_size_physical
+   8: winit::window::Window::inner_size
+   9: neovide::window::update_loop::UpdateLoop::step
+  10: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &mut F>::call_mut
+  11: winit::platform_impl::platform::EventLoop<T>::run
+  12: neovide::main
+  13: std::sys_common::backtrace::__rust_begin_short_backtrace
+  14: main
+  15: __libc_start_call_main
+  16: __libc_start_main@@GLIBC_2.34
+  17: _start
 

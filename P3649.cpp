@@ -1,40 +1,31 @@
-#include <vector>
 #include <iostream>
 #include <cstdio>
+#include <cstring>
+#include <vector>
 #include <algorithm>
 inline int read();
-char temp1[800005];
-char temp2[800005];
-char temp[800005];
-int beg[800005];
-int rk[2][8000005];
-int sa[8000005];
-int height[8000005];
-int fa[8000005];
-int siz1[8000005];
-int siz2[8000005];
+char temp[1000005];
+int rk[2][2000005];
+int sa[2000005];
+int height[2000005];
+int beg[2000005];
+int nn;
+bool used[2000005];
+std::vector<int>vec[2000005],vec2[2000005];
+std::pair<int,int> pa[1000005];
+int fa[1000005];
+int siz[1000005];
 int getfa(int x){
   return x==fa[x]?x:fa[x]=getfa(fa[x]);
 }
-std::pair<int,int> pa[8000005];
-std::vector<int>vec[8000005],vec2[8000005];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  scanf("%s",temp1+1);
-  scanf("%s",temp2+1);
-  int n=0;
-  for(int i=1;temp1[i]!='\0';i++){
-    temp[++n]=temp1[i];
-    beg[i]=1;
-  }
-  temp[++n]='#';
-  for(int i=1;temp2[i]!='\0';i++){
-    temp[++n]=temp2[i];
-  }
+  scanf("%s",temp+1);
+  int n=strlen(temp+1);
   int tn=n;
   int tt=1;
   while(tt<=n){
@@ -93,16 +84,23 @@ signed main(){
     height[rk[op][i]]=k;
     pa[i]=std::make_pair(k,rk[op][i]);
   }
-  int cnt1=0,cnt2=0;
-  long long tans=0;
+  std::sort(pa+1,pa+tn+1);
   for(int i=1;i<=tn;i++){
     fa[i]=i;
-    siz1[i]=beg[sa[i]];
+    siz[i]=1;
   }
-  tans+=(1ll*cnt1*cnt2);
-  std::sort(pa+1,pa+tn+1);
-
-  printf("%lld",tans);
+  int ans=0;
+  for(int i=tn;i>=1;i--){
+    if(pa[i].second==1){
+      continue;
+    }
+    int fa1=getfa(pa[i].second-1);
+    int fa2=getfa(pa[i].second);
+    siz[fa1]+=siz[fa2];
+    fa[fa2]=fa1;
+    ans=std::max(ans,pa[i].first*siz[fa1]);
+  }
+  printf("%d",ans);
   return 0;
 }
 inline int read(){
