@@ -1,35 +1,22 @@
+#include <cstdlib>
 #include <iostream>
 #include <cstdio>
-#include <cstring>
 inline int read();
-int v[105];
-int c[105];
-int dp[300005];
+
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  int n=read();
-  int T=read();
-  for(int i=1;i<=n;i++){
-    v[i]=read();
-  }
-  for(int i=1;i<=n;i++){
-    c[i]=read();
-  }
-  memset(dp,0x3f,sizeof(dp));
-  dp[0]=0;
-  for(int i=1;i<=n;i++){
-    int cnt=0;
-    for(int j=1;j<=c[i];j*=2){
-      cnt+=j;
-      for(int k=300000;k>=v[i]*j;k--){
-        dp[k]=std::min(dp[k],dp[k-v[i]*j]);
-      }
-    }
-  }
+  int cnt=0;
+  do{
+    system("./gen > rev.in");
+    system("time ./rev < rev.in > rev.out");
+    system("time ./rev2 < rev.in > rev2.out");
+    system("cat rev2.out");
+    system("echo -e \"\\n\"");
+  }while(!system("diff rev.out rev2.out"));
   return 0;
 }
 inline int read(){
