@@ -19,7 +19,7 @@ signed main(){
     for(int j=1;j<=n;j++){
       printf("%lld ",(((i-1)*(j-1)+tt)%n+n)%n);
     }
-    printf("\n");;
+    printf("\n");
   }
   return 0;
 }
