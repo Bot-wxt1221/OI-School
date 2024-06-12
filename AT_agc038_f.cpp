@@ -92,13 +92,13 @@ signed main(){
     fa[i]=i;
   }
   for(int i=1;i<=n;i++){
-    a[i]=read()+1;
+    a[i]=read();
     int fi=getfa(i);
     int fj=getfa(a[i]);
     fa[fi]=fj;
   }
   for(int i=1;i<=n;i++){
-    b[i]=read()+1;
+    b[i]=read();
     int fi=getfa(i+100000);
     int fj=getfa(b[i]+100000);
     fa[fi]=fj; 
@@ -125,7 +125,7 @@ signed main(){
       add(fa[b[i]+100000],fa[a[i]],1);
     }
   }
-  printf("%d",ans-Dinic::solve());
+  printf("%d",n-(ans-Dinic::solve()));
   return 0;
 }
 inline int read(){
