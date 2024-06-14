@@ -1,14 +1,35 @@
 #include <iostream>
 #include <cstdio>
+#include <cstring>
 inline int read();
-
+char temp[30];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  
+  int T=read();
+  while(T--){
+    scanf("%s",temp+1);
+    int n=strlen(temp+1);
+    if(temp[1]!='1'){
+      printf("NO\n");
+      goto end;
+    }
+    for(int i=2;i<n;i++){
+      if(temp[i]=='0'){
+        printf("NO\n");
+        goto end;
+      }
+    }
+    if(temp[n]=='9'){
+      printf("NO\n");
+      goto end;
+    }
+    printf("YES\n");
+    end:{}
+  }
   return 0;
 }
 inline int read(){

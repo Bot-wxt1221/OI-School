@@ -1,14 +1,35 @@
 #include <iostream>
 #include <cstdio>
 inline int read();
-
+int a[65];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  
+  int T=read();
+  while(T--){
+    int n=read();
+    for(int i=1;i<=n;i++){
+      a[i]=read();
+    }
+    for(int i=1;i<=n;i++){
+      bool ans=1;
+      for(int j=2;j<=n;j++){
+        if(a[(i+j-1-1)%n+1]>a[(i+j-1)%n+1]){
+          ans=0;
+          break;
+        }
+      }
+      if(ans){
+        printf("Yes\n");
+        goto end;
+      }
+    }
+    printf("No\n");
+    end:{};
+  }
   return 0;
 }
 inline int read(){
