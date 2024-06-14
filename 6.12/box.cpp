@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <set>
-#define int __int128
+#define int long long
 inline int read();
 int a[1000005];
 int c[1000005];
@@ -63,10 +63,10 @@ bool operator < (node2 a,node2 b){
 }
 int n;
 void mod(int x,int t2ype){
-  aa.mod(x,w[x]*t2ype*std::max(a[x]-a[x-1]*type[x],(__int128)0));
-  bb.mod(x,w[x]*t2ype*std::max(a[x]-a[x+1]*type2[x],(__int128)0));
-  aa.mod(x+1,w[x+1]*t2ype*std::max(a[x+1]-a[x]*type[x+1],(__int128)0));
-  bb.mod(x-1,w[x-1]*t2ype*std::max(a[x-1]-a[x]*type2[x-1],(__int128)0));
+  aa.mod(x,w[x]*t2ype*std::max(a[x]-a[x-1]*type[x],0ll));
+  bb.mod(x,w[x]*t2ype*std::max(a[x]-a[x+1]*type2[x],0ll));
+  aa.mod(x+1,w[x+1]*t2ype*std::max(a[x+1]-a[x]*type[x+1],0ll));
+  bb.mod(x-1,w[x-1]*t2ype*std::max(a[x-1]-a[x]*type2[x-1],0ll));
   return ;
 }
 auto split(int x){
@@ -206,8 +206,8 @@ signed main(){
     w[i]=read();
   }
   for(int i=1;i<=n;i++){
-    aa.mod(i,std::max((a[i]-a[i-1]*type[i]),(__int128)0)*w[i]);
-    bb.mod(i,std::max((a[i]-a[i+1]*type2[i]),(__int128)0)*w[i]);
+    aa.mod(i,std::max((a[i]-a[i-1]*type[i]),(int)0)*w[i]);
+    bb.mod(i,std::max((a[i]-a[i+1]*type2[i]),(int)0)*w[i]);
     assign(i,i,c[i]);
   }
   for(int i=1;i<=q;i++){
