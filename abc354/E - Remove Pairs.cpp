@@ -8,7 +8,6 @@ signed main(){
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  
   return 0;
 }
 inline int read(){

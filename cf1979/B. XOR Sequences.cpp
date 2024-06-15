@@ -8,7 +8,13 @@ signed main(){
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  
+  int T=read();
+  while(T--){
+    int a=read();
+    int b=read();
+    a^=b;
+    printf("%d\n",(a&(-a)));
+  }
   return 0;
 }
 inline int read(){

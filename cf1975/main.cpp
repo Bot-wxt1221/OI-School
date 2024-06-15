@@ -8,7 +8,12 @@ signed main(){
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  
+  do{
+    system("./data > in");
+    system("./C < in > out");
+    system("./C2 < in > out2");
+    std::cerr<<1;
+  }while(!system("fc out out2"));
   return 0;
 }
 inline int read(){

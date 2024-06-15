@@ -8,7 +8,12 @@ signed main(){
   freopen(".in","r",stdin);
   freopen(".out","w",stdout);
   #endif
-  
+  printf("1\n");
+  srand(time(NULL));
+  printf("20\n");
+  for(int i=1;i<=20;i++){
+    printf("%d ",rand()%100);
+  }
   return 0;
 }
 inline int read(){
@@ -37,3 +42,4 @@ Example:
 More:
 
 */
+
