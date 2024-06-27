@@ -1,0 +1,38 @@
+mr-=tot2;
+    for(int j=0;j<(1<<9);j++){
+      if((j&alr)){
+        continue;
+      }
+      int cheng=1;
+      int cho=0;
+      int mr2=mr;
+      for(int k=1;k<=9;k++){
+        if((1<<(k-1))&j){
+          cheng*=-1;
+          mr2-=(1-cnt2[k]);
+        }else{
+          cho++;
+        }
+      }
+      if(mr2<0){
+        continue;
+      }
+      ans+=(dp[cho][mr2]*cheng)%mod;
+      ans%=mod;
+      ans+=mod;
+      ans%=mod;
+    }
+    mr+=tot2;
+
+
+3 0
+3 0
+3 0
+2 0
+2 0
+2 1
+2 0
+2 0
+
+w
+
