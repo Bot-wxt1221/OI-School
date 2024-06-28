@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <cstdio>
 #include <map>
@@ -5,25 +6,19 @@
 #include <queue>
 #include <cmath>
 #include <algorithm>
-#define int long long
+#include <unordered_map>
 inline int read();
-std::map<int,int>mp[65],mp2[2];
+std::unordered_map<int,int>mp[65],mp2[2];
 int a[300005];
 int seq[300005];
-int ava[300005];
 int m;
 std::vector<int>vec[300005][2];
 std::vector<int>* get(int s,int op){
   return &(vec[std::lower_bound(seq+1,seq+m+1,s)-seq][op]);
 }
-bool exist[300005];
 class prio_que{
   public:
     std::priority_queue<int>qu,qu2;
-    int siz=0;
-    int size(){
-      return siz;
-    }
     void clear(){
       while(qu.size()>0&&qu2.size()>0&&qu.top()==qu2.top()){
         qu.pop();
@@ -37,7 +32,6 @@ class prio_que{
     }
     int second(){
       int temp=top();
-      clear();
       qu.pop();
       int ret=top();
       qu.push(-temp);
@@ -69,6 +63,12 @@ signed main(){
     seq[i]=a[i];
   }
   std::sort(seq+1,seq+n+1);
+  if(seq[1]==seq[n]){
+    for(int i=1;i<=n;i++){
+      printf("%d ",i);
+    }
+    return 0;
+  }
   m=std::unique(seq+1,seq+n+1)-seq-1;
   m++;
   int tt=0;
@@ -78,7 +78,7 @@ signed main(){
   tt=std::log2(tt);
   for(int i=1;i<=n;i++){
     if(a[i]&(1<<tt)){
-      for(int j=40;j>=0;j--){
+      for(int j=31;j>=0;j--){
         if(mp[j][a[i]>>j]==0){
           mp[j][(a[i]>>j)]=i;
         }
@@ -88,7 +88,7 @@ signed main(){
       mp2[0][a[i]]++;
     }
   }
-  int mn=0x3f3f3f3f;
+  int mn=0x7f7f7f7f;
   int cnt0=0,cnt1=0;
   int key=0;
   for(int i=1;i<=n;i++){
@@ -101,7 +101,7 @@ signed main(){
       cnt0++;
       qu[0].push(i);
       int lst=0;
-      for(int j=40;j>=0;j--){
+      for(int j=31;j>=0;j--){
         lst|=(a[i]&(1ll<<j));
         if(mp[j][lst>>(j)]==0){
           lst^=(1ll<<j);
@@ -145,16 +145,16 @@ signed main(){
   key-=mp2[sta^1][a[cur]^mn];
   temp->erase(temp->begin());
   qu[sta].pop(cur);
-  printf("%lld ",cur);
+  printf("%d ",cur);
   cur=a[cur];
   for(int loooo=1;loooo<n;loooo++){
     if(sta){
-      int mnc=0x3f3f3f3f;
+      int mnc=0x7f7f7f7f;
       if(cnt1==1){
         
       }else{
         int tp=qu[1].top();
-        if(mp2[0][a[tp]^mn]!=key||key==0){
+        if(mp2[0][a[tp]^mn]!=key||key==0||cnt1==2){
           mnc=std::min(qu[1].top(),mnc);
         }else{
           mnc=std::min(mnc,qu[1].second());
@@ -162,19 +162,21 @@ signed main(){
       }
       cnt1--;
       temp=get(cur^mn,0);
-      if(temp->size()!=0){
+      if(mp2[0][cur^mn]&&temp->size()!=0){
         int tt=*temp->begin();
-        if(mp2[1][a[tt]^mn]!=key&&key!=0){
+        auto tt2=temp->begin();
+        if(mp2[1][a[tt]^mn]==key&&key!=0&&cnt0>1){
           if(temp->size()==1){
             goto end3;
           }
           tt=*(temp->begin()+1);
+          tt2=temp->begin()+1;
         }
         if(tt<mnc){
           mp2[0][cur^mn]--;
-          int ti=*temp->begin();
-          printf("%lld ",*temp->begin());
-          temp->erase(temp->begin());
+          int &ti=tt;
+          printf("%d ",tt);
+          temp->erase(tt2);
           key-=mp2[1][cur];
           cur=cur^mn;
           sta=0;
@@ -198,7 +200,7 @@ signed main(){
       cur=a[mnc];
       key-=mp2[0][a[mnc]^mn];
       sta=1;
-      printf("%lld ",mnc);
+      printf("%d ",mnc);
       end:{}
     }else{
       int mnc=0x3f3f3f3f;
@@ -206,7 +208,7 @@ signed main(){
         goto tt;
       }else{
         int tp=qu[0].top();
-        if(mp2[1][a[tp]^mn]!=key&&key!=0){
+        if(mp2[1][a[tp]^mn]!=key||key==0||cnt0==2){
           mnc=std::min(mnc,qu[0].top());
         }else{
           mnc=std::min(qu[0].second(),mnc);
@@ -215,19 +217,21 @@ signed main(){
       tt:{}
       cnt0--;
       temp=get(cur^mn,1);
-      if(temp->size()!=0){
+      if(mp2[1][cur^mn]&&temp->size()!=0){
         int tt=*temp->begin();
-        if(mp2[0][a[tt]^mn]==key||key==0){
+        auto tt2=temp->begin();
+        if(mp2[0][a[tt]^mn]==key&&key!=0&&cnt1>1){
           if(temp->size()==1){
             goto end4;
           }
           tt=*(temp->begin()+1);
+          tt2=temp->begin();
         }
         if(tt<mnc){
           mp2[1][cur^mn]--;
-          int ti=*temp->begin();
-          printf("%lld ",*temp->begin());
-          temp->erase(temp->begin());
+          int &ti=tt;
+          printf("%d ",tt);
+          temp->erase(tt2);
           key-=mp2[0][cur];
           cur=cur^mn;          
           sta=1;
@@ -251,10 +255,9 @@ signed main(){
       cur=a[mnc];
       sta=0;
       key-=mp2[1][a[mnc]^mn];
-      printf("%lld ",mnc);
+      printf("%d ",mnc);
       end2:{}
     }
-    std::cerr<<key<<std::endl;
   }
   return 0;
 }
