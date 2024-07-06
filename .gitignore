@@ -4,3 +4,5 @@ libhashkill.so
 LOJ6758.cpp
 hash-2.cpp
 /.vscode/launch.json
+hashkill*
+kill_hash*
