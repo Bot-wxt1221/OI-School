@@ -95,6 +95,86 @@ namespace warn{
     return ;
   }
   #endif
+  #ifdef CONFIG_NTT
+  static void fwt_or(int *a,int lim,int type){
+    for(int x=2;x<=lim;x<<=1){
+      int k=x>>1;
+      for(int i=0;i<lim;i+=x){
+        for(int j=0;j<k;j++){
+          a[i+j+k]+=((1ll*a[i+j])*type)%mod;
+          a[i+j+k]%=mod;
+        }
+      }
+    }
+    return ;
+  }
+  static void fwt_and(int *a,int lim,int type){
+    for(int x=2;x<=lim;x<<=1){
+      int k=x>>1;
+      for(int i=0;i<lim;i+=x){
+        for(int j=0;j<k;j++){
+          a[i+j]+=(a[i+j+k]*type)%mod;
+          a[i+j]%=mod;
+        }
+      }
+    }
+    return ;
+  }
+  static void fwt_xor(int *a,int lim,int type){
+    for(int x=2;x<=lim;x<<=1){
+      int k=x>>1;
+      for(int i=0;i<lim;i+=x){
+        for(int j=0;j<k;j++){
+          a[i+j]+=a[i+j+k];
+          a[i+j]%=mod;
+          a[i+j+k]=(a[i+j]-a[i+j+k]*2)%mod;
+          a[i+j+k]%=mod;
+          a[i+j]=(1ll*a[i+j]*type)%mod;
+          a[i+j+k]=(1ll*a[i+j+k]*type)%mod;
+        }
+      }
+    }
+    return ;
+  }
+  #endif
+  #ifdef CONFIG_FFT
+  static void fwt_or(double *a,int lim,int type){
+    for(int x=2;x<=lim;x<<=1){
+      int k=x>>1;
+      for(int i=0;i<lim;i+=x){
+        for(int j=0;j<k;j++){
+          a[i+j+k]+=(a[i+j]*type);
+        }
+      }
+    }
+    return ;
+  }
+  static void fwt_and(double *a,int lim,int type){
+    for(int x=2;x<=lim;x<<=1){
+      int k=x>>1;
+      for(int i=0;i<lim;i+=x){
+        for(int j=0;j<k;j++){
+          a[i+j]+=(a[i+j+k]*type);
+        }
+      }
+    }
+    return ;
+  }
+  static void fwt_xor(double *a,int lim,double type){
+    for(int x=2;x<=lim;x<<=1){
+      int k=x>>1;
+      for(int i=0;i<lim;i+=x){
+        for(int j=0;j<k;j++){
+          a[i+j]+=a[i+j+k];
+          a[i+j+k]=(a[i+j]-a[i+j+k]*2);
+          a[i+j]*=type;
+          a[i+j+k]*=type;
+        }
+      }
+    }
+    return ;
+  }
+  #endif
 }
 #ifdef CONFIG_FFT
 Poly operator - (Poly a,const Poly &b){
@@ -107,7 +187,7 @@ Poly operator - (Poly a,const Poly &b){
   }
   return a;
 }
-Poly operator - (Poly a,const Poly &b){
+Poly operator + (Poly a,const Poly &b){
   for(int i=a.ci+1;i<=b.ci;i++){
     a.xi[i]=0;
   }
@@ -116,6 +196,114 @@ Poly operator - (Poly a,const Poly &b){
     a.xi[i]+=b.xi[i];
   }
   return a;
+}
+Poly xor_cheng(Poly &a,Poly &b){
+  int cnt=std::max(a.ci,b.ci);
+  int ncnt=1;
+  while(ncnt<cnt){
+    ncnt*=2;
+  }
+  cnt=ncnt;
+  CONFIG_POLY_DATA *aa=new CONFIG_POLY_DATA [cnt+5];
+  CONFIG_POLY_DATA *bb=new CONFIG_POLY_DATA [cnt+5];
+  for(int i=1;i<=a.ci;i++){
+    aa[i-1]=a.xi[i];
+  }
+  for(int i=a.ci;i<=cnt;i++){
+    aa[i]=0;
+  }
+  for(int i=1;i<=b.ci;i++){
+    bb[i-1]=b.xi[i];
+  }
+  for(int i=b.ci;i<=cnt;i++){
+    bb[i]=0;
+  }
+  warn::fwt_xor(aa,cnt,1);
+  warn::fwt_xor(bb,cnt,1);
+  for(int i=0;i<cnt;i++){
+    aa[i]*=bb[i];
+  }
+  warn::fwt_xor(aa,cnt,(mod+1)/2);
+  Poly ans;
+  ans.ci=cnt;
+  for(int i=1;i<=cnt;i++){
+    ans.xi[i]=aa[i-1];
+  }
+  delete[] aa;
+  delete[] bb;
+  return ans;
+}
+Poly or_cheng(Poly &a,Poly &b){
+  int cnt=std::max(a.ci,b.ci);
+  int ncnt=1;
+  while(ncnt<cnt){
+    ncnt*=2;
+  }
+  cnt=ncnt;
+  CONFIG_POLY_DATA *aa=new CONFIG_POLY_DATA [cnt+5];
+  CONFIG_POLY_DATA *bb=new CONFIG_POLY_DATA [cnt+5];
+  for(int i=1;i<=a.ci;i++){
+    aa[i-1]=a.xi[i];
+  }
+  for(int i=a.ci;i<=cnt;i++){
+    aa[i]=0;
+  }
+  for(int i=1;i<=b.ci;i++){
+    bb[i-1]=b.xi[i];
+  }
+  for(int i=b.ci;i<=cnt;i++){
+    bb[i]=0;
+  }
+  warn::fwt_or(aa,cnt,1);
+  warn::fwt_or(bb,cnt,1);
+  for(int i=0;i<cnt;i++){
+    aa[i]=(bb[i]*aa[i]);
+  }
+  warn::fwt_or(aa,cnt,-1);
+  Poly ans;
+  ans.ci=cnt;
+  for(int i=1;i<=cnt;i++){
+    ans.xi[i]=(aa[i-1]);
+  }
+  delete[] aa;
+  delete[] bb;
+  return ans;
+}
+Poly and_cheng(Poly &a,Poly &b){
+  int cnt=std::max(a.ci,b.ci);
+  int ncnt=1;
+  while(ncnt<cnt){
+    ncnt*=2;
+  }
+  cnt=ncnt;
+  CONFIG_POLY_DATA *aa=new CONFIG_POLY_DATA [cnt+5];
+  CONFIG_POLY_DATA *bb=new CONFIG_POLY_DATA [cnt+5];
+  for(int i=1;i<=a.ci;i++){
+    aa[i-1]=a.xi[i];
+  }
+  for(int i=a.ci;i<=cnt;i++){
+    aa[i]=0;
+  }
+  for(int i=1;i<=b.ci;i++){
+    bb[i-1]=b.xi[i];
+  }
+  for(int i=b.ci;i<=cnt;i++){
+    bb[i]=0;
+  }
+  warn::fwt_and(aa,cnt,1);
+  warn::fwt_and(bb,cnt,1);
+  for(int i=0;i<cnt;i++){
+    aa[i]=(bb[i]*aa[i]);
+  }
+  warn::fwt_and(aa,cnt,-1);
+  Poly ans;
+  ans.ci=cnt;
+  for(int i=1;i<=cnt;i++){
+    ans.xi[i]=(aa[i-1]);
+  }
+  delete[] aa;
+  delete[] bb;
+  return ans;
 }
 Poly FFT(const Poly &a,const Poly &b){
   PI=acos(-1);
@@ -514,6 +702,114 @@ Poly chu(Poly &F,Poly G,Poly &Lf){
   }
   Lf=F-a*temp;
   return temp;
+}
+Poly xor_cheng(Poly &a,Poly &b){
+  int cnt=std::max(a.ci,b.ci);
+  int ncnt=1;
+  while(ncnt<cnt){
+    ncnt*=2;
+  }
+  cnt=ncnt;
+  CONFIG_POLY_DATA *aa=new CONFIG_POLY_DATA [cnt+5];
+  CONFIG_POLY_DATA *bb=new CONFIG_POLY_DATA [cnt+5];
+  for(int i=1;i<=a.ci;i++){
+    aa[i-1]=a.xi[i];
+  }
+  for(int i=a.ci;i<=cnt;i++){
+    aa[i]=0;
+  }
+  for(int i=1;i<=b.ci;i++){
+    bb[i-1]=b.xi[i];
+  }
+  for(int i=b.ci;i<=cnt;i++){
+    bb[i]=0;
+  }
+  warn::fwt_xor(aa,cnt,1);
+  warn::fwt_xor(bb,cnt,1);
+  for(int i=0;i<cnt;i++){
+    aa[i]=(1ll*bb[i]*aa[i])%mod;
+  }
+  warn::fwt_xor(aa,cnt,(mod+1)/2);
+  Poly ans;
+  ans.ci=cnt;
+  for(int i=1;i<=cnt;i++){
+    ans.xi[i]=(aa[i-1]+mod)%mod;
+  }
+  delete[] aa;
+  delete[] bb;
+  return ans;
+}
+Poly or_cheng(Poly &a,Poly &b){
+  int cnt=std::max(a.ci,b.ci);
+  int ncnt=1;
+  while(ncnt<cnt){
+    ncnt*=2;
+  }
+  cnt=ncnt;
+  CONFIG_POLY_DATA *aa=new CONFIG_POLY_DATA [cnt+5];
+  CONFIG_POLY_DATA *bb=new CONFIG_POLY_DATA [cnt+5];
+  for(int i=1;i<=a.ci;i++){
+    aa[i-1]=a.xi[i];
+  }
+  for(int i=a.ci;i<=cnt;i++){
+    aa[i]=0;
+  }
+  for(int i=1;i<=b.ci;i++){
+    bb[i-1]=b.xi[i];
+  }
+  for(int i=b.ci;i<=cnt;i++){
+    bb[i]=0;
+  }
+  warn::fwt_or(aa,cnt,1);
+  warn::fwt_or(bb,cnt,1);
+  for(int i=0;i<cnt;i++){
+    aa[i]=(1ll*bb[i]*aa[i])%mod;
+  }
+  warn::fwt_or(aa,cnt,-1);
+  Poly ans;
+  ans.ci=cnt;
+  for(int i=1;i<=cnt;i++){
+    ans.xi[i]=(aa[i-1]+mod)%mod;
+  }
+  delete[] aa;
+  delete[] bb;
+  return ans;
+}
+Poly and_cheng(Poly &a,Poly &b){
+  int cnt=std::max(a.ci,b.ci);
+  int ncnt=1;
+  while(ncnt<cnt){
+    ncnt*=2;
+  }
+  cnt=ncnt;
+  CONFIG_POLY_DATA *aa=new CONFIG_POLY_DATA [cnt+5];
+  CONFIG_POLY_DATA *bb=new CONFIG_POLY_DATA [cnt+5];
+  for(int i=1;i<=a.ci;i++){
+    aa[i-1]=a.xi[i];
+  }
+  for(int i=a.ci;i<=cnt;i++){
+    aa[i]=0;
+  }
+  for(int i=1;i<=b.ci;i++){
+    bb[i-1]=b.xi[i];
+  }
+  for(int i=b.ci;i<=cnt;i++){
+    bb[i]=0;
+  }
+  warn::fwt_and(aa,cnt,1);
+  warn::fwt_and(bb,cnt,1);
+  for(int i=0;i<cnt;i++){
+    aa[i]=(1ll*bb[i]*aa[i])%mod;
+  }
+  warn::fwt_and(aa,cnt,-1);
+  Poly ans;
+  ans.ci=cnt;
+  for(int i=1;i<=cnt;i++){
+    ans.xi[i]=(aa[i-1]+mod)%mod;
+  }
+  delete[] aa;
+  delete[] bb;
+  return ans;
 }
 #endif
 }
