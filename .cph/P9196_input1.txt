@@ -1,0 +1,7 @@
+3 3
+AA
+AA
+AGA
+AA AA
+AG GA
+AG GA
