@@ -1,8 +1,0 @@
-CompileFlags:
-  Add:
-    ["--std=c++14",
-    "-DONLINE_JUDGE",
-    "-Wno-register",
-    "-Wall"]
-Diagnostics:
-  UnusedIncludes: None
