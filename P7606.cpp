@@ -1,7 +1,9 @@
 #include <iostream>
 #include <cstdio>
+#include <bitset>
 inline int read();
-int a[200005];
+int a1[105][15];
+std::bitset<105> dp[35][35][105][105];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
@@ -9,8 +11,19 @@ signed main(){
   freopen(".out","w",stdout);
   #endif
   int n=read();
+  int p=read();
   for(int i=1;i<=n;i++){
-    a[i]=read();
+    for(int j=1;j<=12;j++){
+      a1[i][j]=read();
+    }
+  }
+  dp[15][15][0][0][0]=1;
+  for(int i=1;i<=n;i++){
+    for(int i=0;i<=30;i++){
+      for(int j=0;j<=30;j++){
+        
+      }
+    }
   }
   return 0;
 }
