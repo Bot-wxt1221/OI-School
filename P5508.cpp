@@ -1,25 +1,12 @@
 #include <iostream>
 #include <cstdio>
 inline int read();
-int fir[200005];
-int nxt[400005];
-int v[400005];
-int dp[200005];
-int now;
-void add(int x,int y){
-  v[++now]=y;
-  nxt[now]=fir[x];
-  fir[x]=now;
-  return ;
-}
-void dfs(int now,int fa){
-  for(int i=fir[now];i!=-1;i=nxt[i]){
-    if(v[i]==fa){
-      continue;
-    }
-    dfs(v[i],now);
-  }
-}
+int v[50005];
+int sl[50005];
+int sr[50005];
+int tl[50005];
+int tr[50005];
+int w[50005];
 signed main(){
   #ifdef ONLINE_JUDGE
   #else
@@ -28,20 +15,19 @@ signed main(){
   #endif
   int n=read();
   int m=read();
-  if(m!=n-1){
-    printf("NIE");
-    return 0;
-  }
   for(int i=1;i<=n;i++){
-    fir[i]=-1;
+    v[i]=read();
   }
   for(int i=1;i<=m;i++){
-    int x=read();
-    int y=read();
-    add(x,y);
-    add(y,x);
+    sl[i]=read();
+    sr[i]=read();
+    tl[i]=read();
+    tr[i]=read();
+    w[i]=read();
   }
-  dfs(1,1);
+  for(int i=1;i<=n;i++){
+
+  }
   return 0;
 }
 inline int read(){
