@@ -62,8 +62,10 @@ void dfs(int now,int fa){
 	return ;
 }
 };
+bool vised1=0;
 void dfs(int now,int fa,int dis){
 	if(now==t){
+    vised1=1;
 		ans=dis;
 	}
 	faa[now]=fa;
@@ -121,6 +123,10 @@ int main(){
 			sum[i]=i;
 		}
 	}
+  if(vised1==0){
+    printf("-1");
+    return 0;
+  }
 	for(int i=1;i<=now;i++){
 		if(sum[u[i]]==sum[v[i]]){
 			dis[sum[u[i]]]+=w[i];
