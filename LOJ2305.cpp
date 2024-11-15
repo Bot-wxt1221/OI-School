@@ -6,7 +6,7 @@
 #include <queue>
 inline int read();
 char temp[50005];
-int fir[200005];
+int fir[100005];
 int nxt[1000005];
 int u[1000005];
 int v[1000005];
@@ -20,19 +20,21 @@ void add(int x,int y){
   return ;
 }
 int get(int x,int y){
-  return x+(y)*70002;
+  return x+(y)*50002;
 }
-int dfn[200005];
-int low[200005];
-bool in_stack[200005];
+int dfn[100005];
+int low[100005];
+bool in_stack[100005];
+char ans[100005];
 int cnt;
-std::stack<int>st;
-std::vector<int>tt[200005];
+int st[100005];
+int tp;
 int toscc[200005];
+int scccnt=0;
 void dfs(int now,int fa){
   dfn[now]=low[now]=++cnt;
   in_stack[now]=1;
-  st.push(now);
+  st[++tp]=now;
   for(int i=fir[now];i!=-1;i=nxt[i]){
     if(dfn[v[i]]==0){
       dfs(v[i],now);
@@ -42,16 +44,14 @@ void dfs(int now,int fa){
     }
   }
   if(dfn[now]==low[now]){
-    toscc[now]=now;
-    tt[now].push_back(now);
+    toscc[now]=++scccnt;
     in_stack[now]=0;
-    while(st.size()>0&&st.top()!=now){
-      toscc[st.top()]=now;
-      tt[now].push_back(st.top());
-      in_stack[st.top()]=0;
-      st.pop();
+    while(tp&&st[tp]!=now){
+      toscc[st[tp]]=scccnt;
+      in_stack[st[tp]]=0;
+      tp--;
     }
-    st.pop();
+    tp--;
   }
   return ;
 }
@@ -59,71 +59,29 @@ int ii[1000005];
 int hii[1000005];
 int jj[1000005];
 int hjj[1000005];
-namespace ng{
-int fir[200005];
-int nxt[1000005];
-int v[1000005];
-int in[1000005];
-int ans[200005];
-bool used[200005];
-int now;
-void add(int x,int y){
-  v[++now]=y;
-  in[y]++;
-  nxt[now]=fir[x];
-  fir[x]=now;
-  return ;
-}
-void getans(){
-  std::queue<int>qu;
-  for(int i=1;i<=200000;i++){
-    if(in[i]==0){
-      qu.push(i);
-    }
-  }
-  memset(used,0,sizeof(used));
-  while(qu.size()>0){
-    int tp=qu.front();
-    qu.pop();
-    for(int i=0;i<tt[tp].size();i++){
-      if(used[tt[tp][i]%70002]){
-        ans[tp]=1;
-      }
-      used[tt[tp][i]%70002]=1;
-    }
-    for(int i=fir[tp];i!=-1;i=nxt[i]){
-      ans[v[i]]|=ans[tp];
-      in[v[i]]--;
-      if(in[v[i]]==0){
-        qu.push(v[i]);
-      }
-    }
-  }
-  return ;
-}
-};
 int n,m;
 int seq[15];
 void dfs(int nw){
   if(nw==vec.size()){
     now=0;
     memset(fir,-1,sizeof(fir));
-    memset(ng::fir,-1,sizeof(ng::fir));
     memset(dfn,0,sizeof(dfn));
-    for(int i=1;i<=n;i++){
-      tt[i].clear();
-    }
-    ng::now=0;
+    cnt=0;
+    scccnt=0;
     for(int iii=1;iii<=m;iii++){
       int i=ii[iii];
       int hi=hii[iii]-'A';
       int j=jj[iii];
       int hj=hjj[iii]-'A';
-      if(hi==temp[i]-'A'||hj==temp[j]-'A'){
+      if(hi==temp[i]-'A'){
         continue;
       }
       if(hi>temp[i]-'A'){
         hi--;
+      }
+      if(hj==temp[j]-'A'){
+        add(get(i,hi),get(i,!hi));
+        continue;
       }
       if(hj>temp[j]-'A'){
         hj--;
@@ -131,7 +89,7 @@ void dfs(int nw){
       add(get(i,hi),get(j,hj));
       add(get(j,!hj),get(i,!hi));
     }
-    for(int i=0;i<=200000;i++){
+    for(int i=0;i<=100000;i++){
       if(dfn[i]==0){
         dfs(i,i);
       }
@@ -140,16 +98,22 @@ void dfs(int nw){
       if(toscc[get(i,0)]==toscc[get(i,1)]){
         return ;
       }
-    }
-    for(int i=1;i<=now;i++){
-      if(toscc[v[i]]==toscc[u[i]]){
-        continue;
+      if(toscc[i]>toscc[i+50002]){
+        if(temp[i]!='C'){
+          ans[i]='C';
+        }else{
+          ans[i]='B';
+        }
+      }else{
+        if(temp[i]!='A'){
+          ans[i]='A';
+        }else{
+          ans[i]='B';
+        }
       }
-      ng::add(toscc[v[i]],toscc[u[i]]);
     }
-    ng::getans();
     for(int i=1;i<=n;i++){
-      if(!ng::ans[toscc[i]]){
+      if(toscc[i]>toscc[i+50002]){
         if(temp[i]!='C'){
           printf("C");
         }else{
@@ -166,7 +130,7 @@ void dfs(int nw){
     //done
     exit(0);
   }
-  for(int i=0;i<3;i++){
+  for(int i=0;i<2;i++){
     temp[vec[nw]]=i+'A';
     dfs(nw+1);
   }
@@ -195,6 +159,7 @@ signed main(){
     while((hjj[i]=getchar())>'Z'||hjj[i]<'A');
   }
   dfs(0);
+  puts("-1");
 	return 0;
 }
 inline int read(){
