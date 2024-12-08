@@ -1,0 +1,3 @@
+[submodule "flakes"]
+	path = flakes
+	url = git@github.com:Bot-wxt1221/OI-direnv
