@@ -2,7 +2,7 @@
   description = "A Nix-flake-based OI environment";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   };
 
   outputs = { self , nixpkgs, ... }: let
