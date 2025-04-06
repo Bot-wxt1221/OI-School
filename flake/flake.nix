@@ -17,11 +17,6 @@
         gcc
         gdb
       ];
-
-      buildInputs = with pkgs; [
-        gcc
-        glibc.static
-      ];
     };
   };
 }
