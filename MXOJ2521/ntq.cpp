@@ -35,6 +35,10 @@ int pow(long long x,int y){
 }
 int cnt;
 signed main(){
+  #ifndef ONLINE_JUDGE
+	freopen("ntq.in","r",stdin);
+	freopen("ntq.out","w",stdout);
+	#endif
   int n=read();
   int m=read();
   int k=read();
